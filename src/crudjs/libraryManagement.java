@@ -264,20 +264,29 @@ public class libraryManagement extends javax.swing.JFrame {
         // TODO add your handling code here:
         int book_id = Integer.parseInt(JOptionPane.showInputDialog(this, "Enter the Book ID to update"));
         try{
-            pst = con.prepareStatement("update books set name=? where book_id=?");
-            pst.setString(1, jTextField2.getText());
-            pst.setInt(2,book_id);
-            pst.executeUpdate();
-            pst = con.prepareStatement("update books set pagecount=? where book_id=?");
-            pst.setString(1, jTextField3.getText());
-            pst.setInt(2,book_id);
-            pst.executeUpdate();
-            pst = con.prepareStatement("update books set author=? where book_id=?");
-            pst.setString(1, jTextField1.getText());
-            pst.setInt(2,book_id);
-            pst.executeUpdate();
-            
-            JOptionPane.showMessageDialog(this, "Data Updated Successfully");
+            int result = -1;
+            pst = con.prepareStatement("select * from books where book_id=?");
+            pst.setInt(1,book_id);
+            rs = pst.executeQuery();
+            if(rs.next()){
+                pst = con.prepareStatement("update books set name=? where book_id=?");
+                pst.setString(1, jTextField2.getText());
+                pst.setInt(2,book_id);
+                pst.executeUpdate();
+                pst = con.prepareStatement("update books set pagecount=? where book_id=?");
+                pst.setString(1, jTextField3.getText());
+                pst.setInt(2,book_id);
+                pst.executeUpdate();
+                pst = con.prepareStatement("update books set author=? where book_id=?");
+                pst.setString(1, jTextField1.getText());
+                pst.setInt(2,book_id);
+                pst.executeUpdate();
+
+                JOptionPane.showMessageDialog(this, "Data Updated Successfully");
+            }
+            else{
+                JOptionPane.showMessageDialog(this, "The entered ID does not exist. Please enter valid ID");
+            }
         }
         catch (SQLException ex) {
              JOptionPane.showMessageDialog(this, "update failed!");
@@ -339,6 +348,7 @@ public class libraryManagement extends javax.swing.JFrame {
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         // TODO add your handling code here:
         DefaultTableModel model = (DefaultTableModel)jTable1.getModel();
+        model.getDataVector().removeAllElements();
         
         try {
             pst = con.prepareStatement("select * from books");
